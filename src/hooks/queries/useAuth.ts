@@ -1,6 +1,24 @@
 import { api } from "../../services/api";
 import { API_ENDPOINTS } from "../../services/endpoints";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+
+export function useAuth() {
+    const queryClient = useQueryClient();
+    const { data: user } = useQuery({
+        queryKey: ["user"],
+        queryFn: () => api.get("/auth/me").then((res) => res.data),
+    });
+
+    const logout = useMutation({
+        mutationFn: () => api.post(API_ENDPOINTS.AUTH.LOGOUT),
+        onSuccess: () => {
+            sessionStorage.removeItem("token");
+            queryClient.clear();
+        },
+    });
+
+    return { user, logout: logout.mutate };
+}
 
 export function useLogin() {
     const queryClient = useQueryClient();
