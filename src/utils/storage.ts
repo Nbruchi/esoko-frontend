@@ -1,35 +1,35 @@
 export const storage = {
     get: <T>(key: string): T | null => {
         try {
-            const item = localStorage.getItem(key);
+            const item = sessionStorage.getItem(key);
             return item ? JSON.parse(item) : null;
         } catch (error) {
-            console.error(`Error reading from local storage: ${error}`);
+            console.error(`Error reading from session storage: ${error}`);
             return null;
         }
     },
 
     set: <T>(key: string, value: T): void => {
         try {
-            localStorage.setItem(key, JSON.stringify(value));
+            sessionStorage.setItem(key, JSON.stringify(value));
         } catch (error) {
-            console.error(`Error writing to localStorage: ${error}`);
+            console.error(`Error writing to session storage: ${error}`);
         }
     },
 
     remove: (key: string): void => {
         try {
-            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
         } catch (error) {
-            console.error(`Error removing from localStorage: ${error}`);
+            console.error(`Error removing from session storage: ${error}`);
         }
     },
 
     clear: (): void => {
         try {
-            localStorage.clear();
+            sessionStorage.clear();
         } catch (error) {
-            console.error(`Error clearing localStorage: ${error}`);
+            console.error(`Error clearing session storage: ${error}`);
         }
     },
 };

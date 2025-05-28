@@ -1,0 +1,91 @@
+Esoko E-Commerce System Requirements Document
+
+A Comprehensive Technical Specification for Developers
+
+Tech Stack: Node.ts (Backend) | React.ts (Frontend) | Postgres (Database)
+
+1. Project Overview
+
+Esoko (short for 'E-market' in Kinyarwanda) is a scalable and feature-rich e-commerce platform designed to support buyers (users), sellers, and administrators. It facilitates product discovery, secure transactions, storefront management, and order fulfillment.
+
+2. User Roles and Capabilities
+User (Customer)
+• Register and authenticate via email, phone, or social login.
+• Browse, search, and filter products.
+• Manage a shopping cart and wish list.
+• Place orders and track status (processing, shipped, delivered).
+• Manage addresses and profile information.
+• Submit product reviews and ratings.
+• Receive in-app and email notifications.
+• Request refunds and returns.
+Seller
+• Register a seller account and set up a shop profile.
+• Create, update, and remove products.
+• Manage inventory and pricing.
+• Process orders and update statuses.
+• Respond to reviews.
+• View performance reports and receive low-stock notifications.
+Admin
+• Manage all users and seller accounts.
+• Approve or ban sellers and products.
+• Oversee product categories and system settings.
+• Handle refunds and return disputes.
+• Moderate blog content and manage homepage features.
+• Access full analytics and system notifications.
+Get all log of activities occurring in the system
+3. Development Tasks and Requirements
+3.1 User Management
+• Implement registration and login for users and sellers.
+• Secure authentication using JWT (token-based).
+• Role-based access for user, seller, and admin.
+• Profile and address management forms.
+3.2 Product Catalog
+• Create product model with images, variants, pricing, and stock.
+• Allow sellers to manage their product listings.
+• Implement category and tag management (admin only).
+• Full-text search and filter features.
+3.3 Cart and Checkout
+• Persistent cart per user.
+• Price calculation, coupon support.
+• Secure checkout with Stripe/Mobile Money.
+• Order confirmation and history tracking.
+3.4 Order and Refund Management
+• Track orders with detailed statuses.
+• Allow customers to request returns/refunds.
+• Admin review and process refund workflows.
+3.5 Notification System
+• In-app and email-based notifications for actions.
+• Support real-time updates (Socket.IO ready).
+3.6 Analytics and Reporting
+• Dashboards for sales, user activity, stock levels.
+• Exportable reports (optional).
+3.7 Review and Ratings
+• Allow only verified buyers to review.
+• Admin moderation of reviews.
+3.8 Blog and Content
+• Admin can post blog articles (optional comments).
+• Promote SEO and engagement.
+4. Data Models
+Each model is structured in JSON-like format with its key attributes and types.
+
+Models include: User, Address, Product, Category, Order, Review, SellerProfile, Notification, RefundRequest, BlogPost. Full definitions available in dev schema.
+
+5. Non-Functional Requirements
+• Performance: Page loads < 2s; optimize images and queries.
+• Scalability: Use microservices-ready architecture; async task queues.
+• Security: HTTPS, JWT, input validation, rate limiting.
+• Accessibility: WCAG 2.1 AA compliance.
+• Localization: Multi-language support (Kinyarwanda, English, French).
+• Responsiveness: Fully mobile-friendly.
+• Documentation: Swagger/OpenAPI for all APIs.
+• Error Handling: Clear logs, try/catch blocks, 4xx/5xx error pages.
+• Deployment: Docker-ready, CI/CD setup, environment configuration.
+6. Theme and Color Guidelines
+Primary: #1a73e8
+Success: #34a853
+Accent: #fbbc04
+Background: #f5f7fa
+Surface: #ffffff
+Text: #2c2c2c
+Muted Text: #6b7280
+Error: #d93025
