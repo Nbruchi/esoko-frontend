@@ -9,3 +9,5 @@ export * from "./reviewApi";
 export * from "./wishlistApi";
 export * from "./notificationApi";
 export * from "./searchApi";
+export * from "./emailApi";
+export * from "./fileApi";

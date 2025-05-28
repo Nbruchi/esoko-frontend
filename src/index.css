@@ -8,14 +8,18 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+
+    /* Base colors */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+
+    /* Component colors */
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
     --color-popover: var(--popover);
     --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: #800000; /* Maroon color */
+    --color-primary-foreground: #ffffff;
     --color-secondary: var(--secondary);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-muted: var(--muted);
@@ -23,14 +27,20 @@
     --color-accent: var(--accent);
     --color-accent-foreground: var(--accent-foreground);
     --color-destructive: var(--destructive);
+
+    /* Border and input colors */
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
+
+    /* Chart colors */
     --color-chart-1: var(--chart-1);
     --color-chart-2: var(--chart-2);
     --color-chart-3: var(--chart-3);
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
+
+    /* Sidebar colors */
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
@@ -39,6 +49,14 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    /* 3D shadows */
+    --shadow-3d: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    --shadow-3d-hover: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+    --shadow-3d-active: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+    --shadow-3d-dark: 0 4px 0 0 rgba(255, 255, 255, 0.1);
+    --shadow-3d-dark-hover: 0 6px 0 0 rgba(255, 255, 255, 0.1);
+    --shadow-3d-dark-active: 0 2px 0 0 rgba(255, 255, 255, 0.1);
 }
 
 :root {
@@ -49,8 +67,8 @@
     --card-foreground: oklch(0.129 0.042 264.695);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.129 0.042 264.695);
-    --primary: oklch(0.208 0.042 265.755);
-    --primary-foreground: oklch(0.984 0.003 247.858);
+    --primary: #800000; /* Maroon color */
+    --primary-foreground: #ffffff;
     --secondary: oklch(0.968 0.007 247.896);
     --secondary-foreground: oklch(0.208 0.042 265.755);
     --muted: oklch(0.968 0.007 247.896);
@@ -68,8 +86,8 @@
     --chart-5: oklch(0.769 0.188 70.08);
     --sidebar: oklch(0.984 0.003 247.858);
     --sidebar-foreground: oklch(0.129 0.042 264.695);
-    --sidebar-primary: oklch(0.208 0.042 265.755);
-    --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+    --sidebar-primary: #800000; /* Maroon color */
+    --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: oklch(0.968 0.007 247.896);
     --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
     --sidebar-border: oklch(0.929 0.013 255.508);
@@ -83,8 +101,8 @@
     --card-foreground: oklch(0.984 0.003 247.858);
     --popover: oklch(0.208 0.042 265.755);
     --popover-foreground: oklch(0.984 0.003 247.858);
-    --primary: oklch(0.929 0.013 255.508);
-    --primary-foreground: oklch(0.208 0.042 265.755);
+    --primary: #800000; /* Maroon color */
+    --primary-foreground: #ffffff;
     --secondary: oklch(0.279 0.041 260.031);
     --secondary-foreground: oklch(0.984 0.003 247.858);
     --muted: oklch(0.279 0.041 260.031);
@@ -102,8 +120,8 @@
     --chart-5: oklch(0.645 0.246 16.439);
     --sidebar: oklch(0.208 0.042 265.755);
     --sidebar-foreground: oklch(0.984 0.003 247.858);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+    --sidebar-primary: #800000; /* Maroon color */
+    --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: oklch(0.279 0.041 260.031);
     --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
     --sidebar-border: oklch(1 0 0 / 10%);
@@ -112,7 +130,7 @@
 
 @layer base {
     * {
-        @apply border-border outline-ring/50;
+        @apply border-border;
     }
     body {
         @apply bg-background text-foreground;
@@ -128,30 +146,34 @@
 
     .btn-3d-default {
         @apply bg-primary text-primary-foreground;
-        @apply shadow-[0_4px_0_0_rgba(0,0,0,0.2)];
-        @apply hover:translate-y-[2px] hover:shadow-[0_2px_0_0_rgba(0,0,0,0.2)];
-        @apply active:translate-y-[4px] active:shadow-none;
-        @apply dark:shadow-[0_4px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:hover:shadow-[0_2px_0_0_rgba(255,255,255,0.1)];
+        box-shadow: var(--shadow-3d);
+        @apply hover:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply active:translate-y-[4px];
+        box-shadow: var(--shadow-3d-active);
+        @apply dark:shadow-3d-dark;
+        @apply dark:hover:shadow-3d-dark-hover;
     }
 
     .input-3d {
         @apply flex h-12 w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-sm;
         @apply transition-all duration-200;
-        @apply shadow-[0_4px_0_0_rgba(0,0,0,0.1)];
-        @apply focus:translate-y-[2px] focus:shadow-[0_2px_0_0_rgba(0,0,0,0.1)];
-        @apply dark:shadow-[0_4px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:focus:shadow-[0_2px_0_0_rgba(255,255,255,0.1)];
+        box-shadow: var(--shadow-3d);
+        @apply focus:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply dark:shadow-3d-dark;
+        @apply dark:focus:shadow-3d-dark-hover;
         @apply dark:bg-background/50;
     }
 
     .textarea-3d {
         @apply flex min-h-[120px] w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-sm;
         @apply transition-all duration-200;
-        @apply shadow-[0_4px_0_0_rgba(0,0,0,0.1)];
-        @apply focus:translate-y-[2px] focus:shadow-[0_2px_0_0_rgba(0,0,0,0.1)];
-        @apply dark:shadow-[0_4px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:focus:shadow-[0_2px_0_0_rgba(255,255,255,0.1)];
+        box-shadow: var(--shadow-3d);
+        @apply focus:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply dark:shadow-3d-dark;
+        @apply dark:focus:shadow-3d-dark-hover;
         @apply dark:bg-background/50;
         @apply resize-none;
     }
@@ -159,22 +181,25 @@
     .card-3d {
         @apply rounded-xl border-2 border-border bg-card text-card-foreground;
         @apply transition-all duration-200;
-        @apply shadow-[0_8px_0_0_rgba(0,0,0,0.2)];
-        @apply hover:translate-y-[2px] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.2)];
-        @apply active:translate-y-[4px] active:shadow-[0_4px_0_0_rgba(0,0,0,0.2)];
-        @apply dark:shadow-[0_8px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:hover:shadow-[0_6px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:active:shadow-[0_4px_0_0_rgba(255,255,255,0.1)];
+        box-shadow: var(--shadow-3d);
+        @apply hover:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply active:translate-y-[4px];
+        box-shadow: var(--shadow-3d-active);
+        @apply dark:shadow-3d-dark;
+        @apply dark:hover:shadow-3d-dark-hover;
+        @apply dark:active:shadow-3d-dark-active;
         @apply dark:bg-card/50;
     }
 
     .select-3d {
         @apply flex h-12 w-full items-center justify-between rounded-xl border-2 border-input bg-background px-4 py-3 text-sm;
         @apply transition-all duration-200;
-        @apply shadow-[0_4px_0_0_rgba(0,0,0,0.1)];
-        @apply focus:translate-y-[2px] focus:shadow-[0_2px_0_0_rgba(0,0,0,0.1)];
-        @apply dark:shadow-[0_4px_0_0_rgba(255,255,255,0.1)];
-        @apply dark:focus:shadow-[0_2px_0_0_rgba(255,255,255,0.1)];
+        box-shadow: var(--shadow-3d);
+        @apply focus:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply dark:shadow-3d-dark;
+        @apply dark:focus:shadow-3d-dark-hover;
         @apply dark:bg-background/50;
     }
 
@@ -186,7 +211,17 @@
     }
 
     .select-content-3d {
-        @apply card-3d;
+        @apply rounded-xl border-2 border-border bg-card text-card-foreground;
+        @apply transition-all duration-200;
+        box-shadow: var(--shadow-3d);
+        @apply hover:translate-y-[2px];
+        box-shadow: var(--shadow-3d-hover);
+        @apply active:translate-y-[4px];
+        box-shadow: var(--shadow-3d-active);
+        @apply dark:shadow-3d-dark;
+        @apply dark:hover:shadow-3d-dark-hover;
+        @apply dark:active:shadow-3d-dark-active;
+        @apply dark:bg-card/50;
         @apply relative z-50 min-w-[8rem] overflow-hidden;
         @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2;
     }

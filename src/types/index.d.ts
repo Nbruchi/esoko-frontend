@@ -1,3 +1,5 @@
+type FileUploadStatus = "idle" | "uploading" | "success" | "error";
+
 enum UserRole {
     ADMIN = "ADMIN",
     SELLER = "SELLER",
@@ -258,3 +260,29 @@ interface PaginatedResponse<T> {
     limit: number;
     totalPages: number;
 }
+
+interface FileUploadResponse {
+    url: string;
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    uploadedAt: string;
+}
+
+interface FileUploadOptions {
+    maxSize?: number;
+    allowedTypes?: string[];
+    compress?: boolean;
+}
+
+interface FileMetadata {
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    url: string;
+    uploadedAt: string;
+    uploadedBy: string;
+}
+
