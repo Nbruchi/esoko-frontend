@@ -296,12 +296,24 @@ export interface AuthState {
     tokens: AuthTokens | null;
 }
 
+export interface VerifyEmailRequest {
+    token: string;
+}
+
+export interface ResendVerificationRequest {
+    email: string;
+}
+
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ResetPasswordRequest {
+    token: string;
+    newPassword: string;
+}
+
 export interface AuthResponse {
     user: User;
-    tokens: {
-        accessToken: string;
-        refreshToken: string;
-        expiresAt: number;
-    };
-    rememberMe?: boolean;
+    tokens: AuthTokens;
 }

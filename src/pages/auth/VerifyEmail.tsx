@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/queries/useAuth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { CustomInput } from "@/components/common/form/CustomInput";
 
 export default function VerifyEmail() {
-    const [otp, setOtp] = useState("");
+    const [otp] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isResending, setIsResending] = useState(false);
     const [searchParams] = useSearchParams();
@@ -77,27 +77,16 @@ export default function VerifyEmail() {
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleVerify}>
                     <div className="space-y-4 rounded-md shadow-sm">
-                        <div>
-                            <label
-                                htmlFor="otp"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Verification Code
-                            </label>
-                            <Input
-                                id="otp"
-                                name="otp"
-                                type="text"
-                                required
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                placeholder="Enter 6-digit code"
-                                className="mt-1"
-                            />
-                        </div>
+                        <CustomInput
+                            name="verificationCode"
+                            label="Verification code"
+                            type="text"
+                            autoComplete="one-time-code"
+                            placeholder="Enter the verification code"
+                        />
                     </div>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="space-y-4">
                         <Button
                             type="submit"
                             className="w-full"

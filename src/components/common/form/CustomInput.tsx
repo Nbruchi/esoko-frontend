@@ -8,7 +8,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     name: string;
@@ -21,6 +20,7 @@ export function CustomInput({
     label,
     description,
     className,
+    placeholder,
     ...props
 }: CustomInputProps) {
     const form = useFormContext();
@@ -31,12 +31,17 @@ export function CustomInput({
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    {label && <FormLabel>{label}</FormLabel>}
+                    {label && (
+                        <FormLabel className="text-gray-900">{label}</FormLabel>
+                    )}
                     <FormControl>
                         <Input
-                            className={cn("", className)}
+                            id={name}
+                            type={props.type}
+                            autoComplete={props.autoComplete}
+                            placeholder={placeholder || label}
+                            className={`${className} text-gray-900`}
                             {...field}
-                            {...props}
                         />
                     </FormControl>
                     {description && (

@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface PasswordInputProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -24,6 +23,7 @@ export function PasswordInput({
     label,
     description,
     className,
+    placeholder,
     ...props
 }: PasswordInputProps) {
     const [showPassword, setShowPassword] = React.useState(false);
@@ -35,14 +35,18 @@ export function PasswordInput({
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    {label && <FormLabel>{label}</FormLabel>}
+                    {label && (
+                        <FormLabel className="text-gray-900">{label}</FormLabel>
+                    )}
                     <FormControl>
                         <div className="relative">
                             <Input
+                                id={name}
                                 type={showPassword ? "text" : "password"}
-                                className={cn("pr-10", className)}
+                                autoComplete={props.autoComplete}
+                                placeholder={placeholder || label}
+                                className={`${className} text-gray-900`}
                                 {...field}
-                                {...props}
                             />
                             <Button
                                 type="button"

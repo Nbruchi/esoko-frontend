@@ -1,135 +1,144 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/hooks/queries/useAuth";
 import { CustomInput } from "@/components/common/form/CustomInput";
 import { PasswordInput } from "@/components/common/form/PasswordInput";
-import { Form } from "@/components/ui/form";
-import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-} from "@/components/ui/card";
 
-const Login = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const { login } = useAuth();
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    rememberMe: z.boolean().optional(),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export const Login = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
+    const [error, setError] = useState<string>("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const form = useForm<LoginFormData>({
+    const methods = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: "",
-            password: "",
             rememberMe: false,
         },
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        setIsLoading(true);
         try {
-            await login({
-                email: data.email,
-                password: data.password,
-                rememberMe: data.rememberMe,
-            });
-            toast.success("Login successful");
-            navigate("/");
-        } catch (error) {
-            if (error instanceof AxiosError) {
-                toast.error(error.response?.data?.message || "Failed to login");
-            } else {
-                toast.error("An unexpected error occurred");
-            }
+            setIsLoading(true);
+            setError("");
+            await login(data);
+            const from =
+                (location.state as { from?: { pathname: string } })?.from
+                    ?.pathname || "/";
+            navigate(from, { replace: true });
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to login");
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Login</CardTitle>
-                    <CardDescription>
-                        Enter your credentials to access your account
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-4"
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md space-y-8">
+                <div>
+                    <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+                        Sign in to your account
+                    </h2>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                        Or{" "}
+                        <Link
+                            to="/register"
+                            className="font-medium text-primary hover:text-primary/80"
                         >
+                            create a new account
+                        </Link>
+                    </p>
+                </div>
+
+                {error && (
+                    <Alert variant="destructive">
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+
+                <FormProvider {...methods}>
+                    <form
+                        className="mt-8 space-y-6"
+                        onSubmit={methods.handleSubmit(onSubmit)}
+                    >
+                        <div className="space-y-4 rounded-md shadow-sm">
                             <CustomInput
                                 name="email"
-                                label="Email"
-                                placeholder="Enter your email"
+                                label="Email address"
                                 type="email"
+                                autoComplete="email"
+                                placeholder="Enter your email"
                             />
+
                             <PasswordInput
                                 name="password"
                                 label="Password"
+                                autoComplete="current-password"
                                 placeholder="Enter your password"
                             />
-                            <div className="flex items-center space-x-2">
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
                                 <Checkbox
                                     id="rememberMe"
-                                    checked={form.watch("rememberMe")}
-                                    onCheckedChange={(checked) =>
-                                        form.setValue("rememberMe", !!checked)
-                                    }
+                                    {...methods.register("rememberMe")}
                                 />
                                 <label
                                     htmlFor="rememberMe"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    className="ml-2 block text-sm text-gray-900"
                                 >
                                     Remember me
                                 </label>
                             </div>
-                            <Button
-                                type="submit"
-                                className="w-full"
-                                disabled={isLoading}
-                            >
-                                {isLoading && (
+
+                            <div className="text-sm">
+                                <Link
+                                    to="/forgot-password"
+                                    className="font-medium text-primary hover:text-primary/80"
+                                >
+                                    Forgot your password?
+                                </Link>
+                            </div>
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={
+                                isLoading ||
+                                Object.keys(methods.formState.errors).length > 0
+                            }
+                        >
+                            {isLoading ? (
+                                <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                )}
-                                Login
-                            </Button>
-                            <div className="text-center text-sm">
-                                <Link
-                                    to="/auth/forgot-password"
-                                    className="text-primary hover:underline"
-                                >
-                                    Forgot password?
-                                </Link>
-                            </div>
-                            <div className="text-center text-sm">
-                                Don't have an account?{" "}
-                                <Link
-                                    to="/auth/register"
-                                    className="text-primary hover:underline"
-                                >
-                                    Register
-                                </Link>
-                            </div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                                    Signing in...
+                                </>
+                            ) : (
+                                "Sign in"
+                            )}
+                        </Button>
+                    </form>
+                </FormProvider>
+            </div>
         </div>
     );
 };
-
-export default Login;
