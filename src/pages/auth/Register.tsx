@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/queries/useAuth";
 import { CustomInput } from "@/components/common/form/CustomInput";
@@ -10,22 +10,11 @@ import { PasswordInput } from "@/components/common/form/PasswordInput";
 import { Form } from "@/components/ui/form";
 import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
-
-interface ValidationError {
-    path: string[];
-    message: string;
-}
-
-interface ErrorResponse {
-    success: false;
-    error: string;
-    errors?: ValidationError[];
-}
 
 export default function Register() {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading] = useState(false);
     const { register } = useAuth();
+    const navigate = useNavigate();
 
     const form = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
@@ -41,33 +30,16 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterFormData) => {
         try {
-            setIsLoading(true);
-            await register(data);
-            toast.success(
-                "Registration successful! Please check your email to verify your account."
-            );
-        } catch (error) {
-            if (error instanceof AxiosError && error.response?.data) {
-                const err = error.response.data as ErrorResponse;
-                if (err.errors) {
-                    err.errors.forEach((validationError) => {
-                        const field = validationError
-                            .path[0] as keyof RegisterFormData;
-                        form.setError(field, {
-                            type: "manual",
-                            message: validationError.message,
-                        });
-                    });
-                } else {
-                    toast.error(
-                        err.error || "An error occurred during registration"
-                    );
-                }
-            } else {
-                toast.error("An unexpected error occurred");
+            const response = await register(data);
+            if (response?.data?.redirect) {
+                toast.success(
+                    "Registration successful! Please check your email for the verification code."
+                );
+                navigate(response.data.redirect);
             }
-        } finally {
-            setIsLoading(false);
+        } catch (error) {
+            console.error("Registration error:", error);
+            toast.error("Registration failed. Please try again.");
         }
     };
 
@@ -144,7 +116,7 @@ export default function Register() {
 
             <div className="text-center text-sm">
                 Already have an account?{" "}
-                <Link to="/login" className="text-primary hover:underline">
+                <Link to="/auth/login" className="text-primary hover:underline">
                     Login
                 </Link>
             </div>

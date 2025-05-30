@@ -8,7 +8,6 @@ import type {
     AuthResponse,
 } from "@/types";
 import { useAuth as useAuthContext } from "@/context/AuthContext";
-import { AxiosError } from "axios";
 
 export const useAuth = () => {
     const queryClient = useQueryClient();
@@ -44,28 +43,19 @@ export const useAuth = () => {
     });
 
     const register = useMutation({
-        mutationFn: async (userData: RegisterRequest) => {
-            try {
-                const response = await api.post<ApiResponse<AuthResponse>>(
-                    "/auth/register",
-                    userData
-                );
-                if (!response.data) {
-                    throw new Error("No response data received");
-                }
-                return response.data;
-            } catch (error) {
-                if (error instanceof AxiosError && error.response?.data) {
-                    throw error;
-                }
-                throw new Error("Registration failed");
+        mutationFn: async (data: RegisterRequest) => {
+            const response = await api.post<ApiResponse<{ redirect: string }>>(
+                "/auth/register",
+                data
+            );
+            if (!response.data) {
+                throw new Error("No response data received");
             }
+            return response.data;
         },
         onSuccess: (response) => {
-            if (response?.success && response?.data) {
-                const { user, tokens } = response.data;
-                contextLogin(user, tokens);
-                queryClient.setQueryData(["auth", "user"], user);
+            if (response?.success) {
+                queryClient.invalidateQueries({ queryKey: ["auth"] });
             }
         },
     });
@@ -80,13 +70,42 @@ export const useAuth = () => {
         },
     });
 
+    const verifyEmail = useMutation({
+        mutationFn: async (data: { email: string; otp: string }) => {
+            const response = await api.post<ApiResponse<null>>(
+                "/auth/verify-email",
+                data
+            );
+            if (!response.data) {
+                throw new Error("No response data received");
+            }
+            return response.data;
+        },
+    });
+
+    const resendOtp = useMutation({
+        mutationFn: async (data: { email: string }) => {
+            const response = await api.post<ApiResponse<null>>(
+                "/auth/resend-verification",
+                data
+            );
+            if (!response.data) {
+                throw new Error("No response data received");
+            }
+            return response.data;
+        },
+    });
+
     return {
         user,
         isAuthenticated: !!user,
         isLoading,
         login: (data: LoginRequest & { rememberMe?: boolean }) =>
             login.mutate(data),
-        register: (data: RegisterRequest) => register.mutate(data),
+        register: (data: RegisterRequest) => register.mutateAsync(data),
         logout: () => logout.mutate(),
+        verifyEmail: (data: { email: string; otp: string }) =>
+            verifyEmail.mutateAsync(data),
+        resendOtp: (data: { email: string }) => resendOtp.mutateAsync(data),
     };
 };

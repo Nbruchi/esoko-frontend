@@ -1,109 +1,137 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { api } from "@/lib/api-client";
+import { useAuth } from "@/hooks/queries/useAuth";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { AxiosError } from "axios";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
-interface VerifyEmailResponse {
-    success: boolean;
-    message: string;
-}
-
-const VerifyEmail = () => {
+export default function VerifyEmail() {
+    const [otp, setOtp] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [isResending, setIsResending] = useState(false);
     const [searchParams] = useSearchParams();
+    const email = searchParams.get("email");
     const navigate = useNavigate();
-    const [isVerifying, setIsVerifying] = useState(true);
-    const [isVerified, setIsVerified] = useState(false);
-    const token = searchParams.get("token");
+    const { verifyEmail, resendOtp } = useAuth();
 
     useEffect(() => {
-        const verifyEmail = async () => {
-            if (!token) {
-                toast.error("Invalid verification link");
+        if (!email) {
+            toast.error("No email provided for verification");
+            navigate("/auth/login");
+        }
+    }, [email, navigate]);
+
+    const handleVerify = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        try {
+            setIsLoading(true);
+            const response = await verifyEmail({ email, otp });
+            if (response?.success) {
+                toast.success("Email verified successfully!");
                 navigate("/auth/login");
-                return;
             }
+        } catch (error) {
+            console.error("Verification error:", error);
+            toast.error("Verification failed. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-            try {
-                const response = await api.post<VerifyEmailResponse>(
-                    "/auth/verify-email",
-                    { token }
-                );
-                if (response.data?.success) {
-                    setIsVerified(true);
-                    toast.success("Email verified successfully");
-                }
-            } catch (error) {
-                if (error instanceof AxiosError) {
-                    toast.error(
-                        error.response?.data?.message ||
-                            "Failed to verify email"
-                    );
-                } else {
-                    toast.error("Failed to verify email");
-                }
-            } finally {
-                setIsVerifying(false);
+    const handleResendOtp = async () => {
+        if (!email) return;
+
+        try {
+            setIsResending(true);
+            const response = await resendOtp({ email });
+            if (response?.success) {
+                toast.success("New verification code sent to your email!");
             }
-        };
+        } catch (error) {
+            console.error("Resend error:", error);
+            toast.error(
+                "Failed to resend verification code. Please try again."
+            );
+        } finally {
+            setIsResending(false);
+        }
+    };
 
-        verifyEmail();
-    }, [token, navigate]);
-
-    if (isVerifying) {
-        return (
-            <div className="flex min-h-screen items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
-        );
+    if (!email) {
+        return null;
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Email Verification</CardTitle>
-                    <CardDescription>
-                        {isVerified
-                            ? "Your email has been verified successfully"
-                            : "We couldn't verify your email"}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {isVerified ? (
-                        <Button
-                            className="w-full"
-                            onClick={() => navigate("/auth/login")}
-                        >
-                            Continue to Login
-                        </Button>
-                    ) : (
-                        <div className="space-y-4">
-                            <p className="text-sm text-muted-foreground">
-                                The verification link may have expired or is
-                                invalid. Please try logging in to request a new
-                                verification email.
-                            </p>
-                            <Button
-                                className="w-full"
-                                onClick={() => navigate("/auth/login")}
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md space-y-8">
+                <div>
+                    <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+                        Verify your email
+                    </h2>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                        We sent a verification code to {email}
+                    </p>
+                </div>
+                <form className="mt-8 space-y-6" onSubmit={handleVerify}>
+                    <div className="space-y-4 rounded-md shadow-sm">
+                        <div>
+                            <label
+                                htmlFor="otp"
+                                className="block text-sm font-medium text-gray-700"
                             >
-                                Go to Login
-                            </Button>
+                                Verification Code
+                            </label>
+                            <Input
+                                id="otp"
+                                name="otp"
+                                type="text"
+                                required
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                placeholder="Enter 6-digit code"
+                                className="mt-1"
+                            />
                         </div>
-                    )}
-                </CardContent>
-            </Card>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Verifying...
+                                </>
+                            ) : (
+                                "Verify Email"
+                            )}
+                        </Button>
+
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={handleResendOtp}
+                            disabled={isResending}
+                        >
+                            {isResending ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Resending...
+                                </>
+                            ) : (
+                                "Resend Code"
+                            )}
+                        </Button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
-};
-
-export default VerifyEmail;
+}
