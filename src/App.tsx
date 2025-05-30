@@ -1,14 +1,8 @@
-import { BrowserRouter } from "react-router-dom";
-import { Toaster } from "sonner";
-import AppRoutes from "./routes";
+import { RouterProvider } from "react-router-dom";
+import router from "@/routes";
 
-const App = () => {
-    return (
-        <BrowserRouter>
-            <AppRoutes />
-            <Toaster richColors position="top-right" />
-        </BrowserRouter>
-    );
-};
+function App() {
+    return <RouterProvider router={router} />;
+}
 
 export default App;
