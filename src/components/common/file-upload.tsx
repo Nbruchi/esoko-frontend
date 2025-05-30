@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
-import { useFileUpload } from "@/hooks/useFileUpload";
+import { useFileUpload } from "@/hooks/queries/useFileUpload";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 

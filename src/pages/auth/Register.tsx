@@ -7,7 +7,7 @@ import CustomSelect from "@/components/common/inputs/custom-select";
 import CustomInput from "@/components/common/inputs/custom-input";
 import PasswordInput from "@/components/common/inputs/password-input";
 import { Button } from "@/components/ui/button";
-import { useRegister } from "@/hooks/useAuth";
+import { useRegister } from "@/hooks/queries/useAuth";
 
 const registerSchema = z.object({
     email: z.string().email("Invalid email address"),
