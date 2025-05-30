@@ -1,38 +1,31 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
-import type { LoginRequest, RegisterRequest, User } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import type { User } from "@/types";
 
-export const useLogin = () => {
-    return useMutation({
-        mutationFn: (credentials: LoginRequest) =>
-            api.post<{ user: User; token: string }>(`/auth/login`, credentials),
-        onSuccess: (response) => {
-            if (response.success && response.data?.token) {
-                sessionStorage.setItem(`token`, response.data.token);
-            }
+export const useAuth = () => {
+    const queryClient = useQueryClient();
+
+    const { data: user, isLoading } = useQuery({
+        queryKey: ["auth", "user"],
+        queryFn: async () => {
+            const { data } = await api.get<User>("/auth/me");
+            return data;
         },
     });
-};
 
-export const useRegister = () => {
-    return useMutation({
-        mutationFn: (credentials: RegisterRequest) =>
-            api.post<{ user: User; token: string }>(
-                `/auth/register`,
-                credentials
-            ),
-        onSuccess: (response) => {
-            if (response.success && response.data?.token) {
-                sessionStorage.setItem(`token`, response.data.token);
-            }
+    const logout = useMutation({
+        mutationFn: async () => {
+            await api.post("/auth/logout");
+        },
+        onSuccess: () => {
+            queryClient.clear();
         },
     });
-};
 
-export const useUser = () => {
-    return useQuery({
-        queryKey: ["user"],
-        queryFn: () => api.get<User>(`/users/profile`),
-        enabled: !!sessionStorage.getItem(`token`),
-    });
+    return {
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        logout: () => logout.mutate(),
+    };
 };

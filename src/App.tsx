@@ -1,11 +1,16 @@
+import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
+import AppRoutes from "./routes";
+import { AuthProvider } from "@/context/AuthContext";
 
 const App = () => {
     return (
-        <div className="flex w-full h-screen items-center justify-center">
-            <h1 className="text-emerald-500">Esoko</h1>
-            <Toaster richColors position="top-right" />
-        </div>
+        <AuthProvider>
+            <BrowserRouter>
+                <AppRoutes />
+                <Toaster richColors position="top-right" />
+            </BrowserRouter>
+        </AuthProvider>
     );
 };
 
