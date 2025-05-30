@@ -1,0 +1,24 @@
+{
+    "common": {
+        "welcome": "Bienvenue",
+        "login": "Connexion",
+        "register": "S'inscrire",
+        "logout": "Déconnexion",
+        "email": "Email",
+        "password": "Mot de passe",
+        "submit": "Soumettre",
+        "cancel": "Annuler"
+    },
+    "auth": {
+        "loginTitle": "Connectez-vous à votre compte",
+        "registerTitle": "Créer un compte",
+        "forgotPassword": "Mot de passe oublié?",
+        "noAccount": "Vous n'avez pas de compte?",
+        "hasAccount": "Vous avez déjà un compte?"
+    },
+    "errors": {
+        "required": "Ce champ est obligatoire",
+        "invalidEmail": "Adresse email invalide",
+        "passwordLength": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+}

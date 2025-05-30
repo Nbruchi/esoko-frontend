@@ -1,0 +1,24 @@
+{
+    "common": {
+        "welcome": "Welcome",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Submit",
+        "cancel": "Cancel"
+    },
+    "auth": {
+        "loginTitle": "Login to your account",
+        "registerTitle": "Create an account",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?"
+    },
+    "errors": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address",
+        "passwordLength": "Password must be at least 8 characters"
+    }
+}
