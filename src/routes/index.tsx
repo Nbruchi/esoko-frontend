@@ -1,18 +1,27 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useAuth } from "@/hooks/queries/useAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
 import SellerLayout from "@/layouts/SellerLayout";
 import AdminLayout from "@/layouts/AdminLayout";
+import AuthLayout from "@/layouts/AuthLayout";
+import { UserRole } from "@/types";
 
 // Auth Pages
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
+import VerifyEmail from "@/pages/auth/VerifyEmail";
+
+// Public Pages
+import Home from "@/pages/Home";
+import ProductList from "@/pages/ProductList";
+import ProductDetails from "@/pages/ProductDetails";
+import SearchResults from "@/pages/SearchResults";
 
 // Customer Pages
 import CustomerDashboard from "@/pages/customer/Dashboard";
-import CustomerProducts from "@/pages/customer/Products";
 import CustomerCart from "@/pages/customer/Cart";
 import CustomerOrders from "@/pages/customer/Orders";
 import CustomerProfile from "@/pages/customer/Profile";
@@ -30,39 +39,50 @@ import AdminUsers from "@/pages/admin/Users";
 import AdminProducts from "@/pages/admin/Products";
 import AdminOrders from "@/pages/admin/Orders";
 import AdminSettings from "@/pages/admin/Settings";
-import { UserRole } from "@/types";
+import NotFound from "@/pages/NotFound";
 
 const AppRoutes = () => {
-    const { user, isAuthenticated } = useAuth();
+    const { isLoading } = useAuth();
+
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            </div>
+        );
+    }
 
     return (
         <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<MainLayout />}>
-                <Route index element={<Navigate to="/auth/login" replace />} />
-                <Route path="auth">
-                    <Route path="login" element={<Login />} />
-                    <Route path="register" element={<Register />} />
-                    <Route
-                        path="forgot-password"
-                        element={<ForgotPassword />}
-                    />
-                </Route>
+            {/* Auth Routes */}
+            <Route path="/auth" element={<AuthLayout />}>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
             </Route>
 
-            {/* Protected Customer Routes */}
+            {/* Public Routes */}
+            <Route path="/" element={<MainLayout />}>
+                <Route index element={<Home />} />
+                <Route path="products" element={<ProductList />} />
+                <Route path="products/:id" element={<ProductDetails />} />
+                <Route path="search" element={<SearchResults />} />
+            </Route>
+
+            {/* Email Verification Route */}
+            <Route path="/verify-email" element={<VerifyEmail />} />
+
+            {/* Protected User Routes */}
             <Route
                 path="/customer"
                 element={
-                    isAuthenticated && user?.role === UserRole.CUSTOMER ? (
+                    <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
                         <CustomerLayout />
-                    ) : (
-                        <Navigate to="/auth/login" replace />
-                    )
+                    </ProtectedRoute>
                 }
             >
                 <Route index element={<CustomerDashboard />} />
-                <Route path="products" element={<CustomerProducts />} />
                 <Route path="cart" element={<CustomerCart />} />
                 <Route path="orders" element={<CustomerOrders />} />
                 <Route path="profile" element={<CustomerProfile />} />
@@ -72,11 +92,9 @@ const AppRoutes = () => {
             <Route
                 path="/seller"
                 element={
-                    isAuthenticated && user?.role === UserRole.SELLER ? (
+                    <ProtectedRoute allowedRoles={[UserRole.SELLER]}>
                         <SellerLayout />
-                    ) : (
-                        <Navigate to="/auth/login" replace />
-                    )
+                    </ProtectedRoute>
                 }
             >
                 <Route index element={<SellerDashboard />} />
@@ -90,11 +108,9 @@ const AppRoutes = () => {
             <Route
                 path="/admin"
                 element={
-                    isAuthenticated && user?.role === UserRole.ADMIN ? (
+                    <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
                         <AdminLayout />
-                    ) : (
-                        <Navigate to="/auth/login" replace />
-                    )
+                    </ProtectedRoute>
                 }
             >
                 <Route index element={<AdminDashboard />} />
@@ -104,8 +120,8 @@ const AppRoutes = () => {
                 <Route path="settings" element={<AdminSettings />} />
             </Route>
 
-            {/* Catch all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* 404 Route */}
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };

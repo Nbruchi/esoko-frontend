@@ -4,6 +4,9 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         extend: {
+            fontFamily: {
+                sans: ["Poppins", "sans-serif"],
+            },
             borderRadius: {
                 lg: "var(--radius)",
                 md: "calc(var(--radius) - 2px)",
@@ -64,10 +67,10 @@ export default {
                 },
             },
             boxShadow: {
-                "3d-sm": "0 2px 0 0 rgba(0,0,0,0.2)",
-                "3d": "0 4px 0 0 rgba(0,0,0,0.2)",
-                "3d-lg": "0 6px 0 0 rgba(0,0,0,0.2)",
-                "3d-inset": "inset 0 -2px 0 0 rgba(0,0,0,0.2)",
+                "3d-sm": "0 4px 0 0 hsl(var(--shadow-color) / 0.5)",
+                "3d": "0 8px 0 0 hsl(var(--shadow-color) / 0.5)",
+                "3d-lg": "0 12px 0 0 hsl(var(--shadow-color) / 0.5)",
+                "3d-inset": "inset 0 -2px 0 0 hsl(var(--shadow-color) / 0.5)",
             },
             transform: {
                 "3d": "translateY(-2px)",
@@ -96,22 +99,22 @@ export default {
                 "3d-press": {
                     "0%": {
                         transform: "translateY(0)",
-                        boxShadow: "0 4px 0 0 rgba(0,0,0,0.2)",
+                        boxShadow: "0 8px 0 0 hsl(var(--shadow-color) / 0.5)",
                     },
                     "50%": {
-                        transform: "translateY(2px)",
-                        boxShadow: "0 2px 0 0 rgba(0,0,0,0.2)",
+                        transform: "translateY(8px)",
+                        boxShadow: "0 0 0 0 hsl(var(--shadow-color) / 0.5)",
                     },
                     "100%": {
                         transform: "translateY(0)",
-                        boxShadow: "0 4px 0 0 rgba(0,0,0,0.2)",
+                        boxShadow: "0 8px 0 0 hsl(var(--shadow-color) / 0.5)",
                     },
                 },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
-                "3d-press": "3d-press 0.2s ease-in-out",
+                "3d-press": "3d-press 0.1s ease-in-out",
             },
         },
     },

@@ -69,6 +69,7 @@ export interface User extends BaseModel {
     notificationPreferences: NotificationPreferences;
     settings: UserSettings;
     lastLogin?: Date;
+    rememberMe?: boolean;
 }
 
 export interface NotificationPreferences {
@@ -232,6 +233,7 @@ export interface RegisterRequest {
 export interface LoginRequest {
     email: string;
     password: string;
+    rememberMe?: boolean;
 }
 
 export interface ProductRequest {
@@ -280,4 +282,26 @@ export interface PaginatedResponse<T> {
     page: number;
     limit: number;
     totalPages: number;
+}
+
+// Auth Types
+export interface AuthTokens {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number; // Unix timestamp
+}
+
+export interface AuthState {
+    user: User | null;
+    tokens: AuthTokens | null;
+}
+
+export interface AuthResponse {
+    user: User;
+    tokens: {
+        accessToken: string;
+        refreshToken: string;
+        expiresAt: number;
+    };
+    rememberMe?: boolean;
 }
